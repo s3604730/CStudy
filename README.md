@@ -1,0 +1,2 @@
+# CStudy
+ just Studying C
